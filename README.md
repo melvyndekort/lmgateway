@@ -4,11 +4,11 @@
 
 ### Quality
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/f262f1948443a73792aa/maintainability)](https://codeclimate.com/github/melvyndekort/ami-refresher/maintainability) [![codecov](https://codecov.io/gh/melvyndekort/ami-refresher/graph/badge.svg?token=MGQqZ0rGnz)](https://codecov.io/gh/melvyndekort/ami-refresher)
+[![codecov](https://codecov.io/gh/melvyndekort/lmgateway/graph/badge.svg?token=EYBdVnX4sC)](https://codecov.io/gh/melvyndekort/lmgateway)
 
 ### Workflows
 
-![pipeline](https://github.com/melvyndekort/ami-refresher/actions/workflows/pipeline.yml/badge.svg)
+![pipeline](https://github.com/melvyndekort/lmgateway/actions/workflows/pipeline.yml/badge.svg)
 
 ## Purpose
 
