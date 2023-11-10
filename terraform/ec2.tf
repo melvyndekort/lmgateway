@@ -1,9 +1,9 @@
 data "aws_ssm_parameter" "ami_x86" {
-  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-minimal-kernel-default-x86_64"
+  name = var.ssm_x86
 }
 
 data "aws_ssm_parameter" "ami_arm" {
-  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-minimal-kernel-default-arm64"
+  name = var.ssm_arm
 }
 
 resource "aws_key_pair" "melvyn" {

@@ -9,3 +9,11 @@ variable "sns_topic_region" {
 variable "desired_capacity" {
   type = number
 }
+
+variable "ssm_x86" {
+  type = string
+}
+
+variable "ssm_arm" {
+  type = string
+}
