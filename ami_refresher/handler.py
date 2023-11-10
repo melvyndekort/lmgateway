@@ -14,6 +14,8 @@ ami_param_path_arm = os.environ['AMI_PARAM_PATH_ARM64']
 
 
 def handle(event, context):
+    logger.info('Event: %s', event)
+
     logger.info('Updating X86 launch template')
     ami_id_x86 = ami_fetcher.get_ami_id(ami_param_path_x86)
     refresher.update_launch_template(
