@@ -1,0 +1,41 @@
+---
+- name: Gather facts from AWS metadata endpoint
+  amazon.aws.ec2_metadata_facts:
+
+- name: Set timezone to Europe/Amsterdam
+  community.general.timezone:
+    name: Europe/Amsterdam
+
+- name: Set NTP server
+  notify:
+    - 'Enable timesyncd'
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^NTP='
+    line: NTP=169.254.169.123
+
+- name: Set an alternative localhost entry
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    search_string: '127.0.1.1'
+    line: 127.0.1.1 lmgateway lmgateway.localdomain
+
+- name: Enable IPv6 in dnf
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    search_string: 'ip_resolve=IPv6'
+    line: ip_resolve=IPv6
+
+- name: Install extra tools
+  ansible.builtin.dnf:
+    name:
+      - vim-enhanced
+      - nmap
+      - telnet
+      - dnsutils
+      - tmux
+      - ncurses-term
+      - htop
+      - git
+      - wireguard-tools
+    state: present
