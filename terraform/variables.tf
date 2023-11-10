@@ -7,5 +7,5 @@ variable "sns_topic_region" {
 }
 
 variable "desired_capacity" {
-  type    = number
+  type = number
 }
