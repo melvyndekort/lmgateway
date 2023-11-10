@@ -21,14 +21,12 @@ decrypt:
 	@aws kms decrypt \
 	--ciphertext-blob $$(cat terraform/secrets.yaml.encrypted) \
 	--output text \
-	--query Plaintext \
-	--encryption-context target=lmgateway | base64 -d > terraform/secrets.yaml
+	--query Plaintext | base64 -d > terraform/secrets.yaml
 
 encrypt:
 	@aws kms encrypt \
 	--key-id alias/generic \
 	--plaintext fileb://terraform/secrets.yaml \
-	--encryption-context target=lmgateway \
 	--output text \
 	--query CiphertextBlob > terraform/secrets.yaml.encrypted
 	@rm -f terraform/secrets.yaml
