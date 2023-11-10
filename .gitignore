@@ -1,0 +1,12 @@
+lambda.zip
+.terraform/
+.terraform.lock.hcl
+__pycache__/
+.pytest_cache
+.vscode/
+.coverage
+dist/
+package/
+coverage.xml
+wheelhouse/
+secrets.yaml
