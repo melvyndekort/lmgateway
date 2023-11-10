@@ -1,3 +1,11 @@
+data "aws_ssm_parameter" "ami_x86" {
+  name = var.ssm_x86
+}
+
+data "aws_ssm_parameter" "ami_arm" {
+  name = var.ssm_arm
+}
+
 resource "aws_ssm_parameter" "user_password" {
   name  = "/linux/user_password"
   type  = "SecureString"
