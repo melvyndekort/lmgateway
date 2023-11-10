@@ -1,7 +1,7 @@
 resource "aws_autoscaling_group" "lmgateway" {
   name                = "lmgateway"
   vpc_zone_identifier = data.terraform_remote_state.cloudsetup.outputs.public_subnets
-  desired_capacity    = 1
+  desired_capacity    = var.desired_capacity
   max_size            = 2
   min_size            = 0
   capacity_rebalance  = true

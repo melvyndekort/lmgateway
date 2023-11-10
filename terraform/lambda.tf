@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_log_group" "ami_refresher" {
   name              = "/aws/lambda/ami-refresher"
   retention_in_days = 7
-  kms_key_id        = data.aws_kms_key.generic.arn
+  kms_key_id        = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
 }
 
 data "archive_file" "empty_lambda" {
@@ -38,12 +38,12 @@ resource "aws_lambda_function" "ami_refresher" {
     mode = "Active"
   }
 
-  kms_key_arn = data.aws_kms_key.generic.arn
+  kms_key_arn = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
 
   environment {
     variables = {
-      AMI_PARAM_PATH_X86      = "/aws/service/ami-amazon-linux-latest/al2023-ami-minimal-kernel-default-x86_64"
-      AMI_PARAM_PATH_ARM64    = "/aws/service/ami-amazon-linux-latest/al2023-ami-minimal-kernel-default-arm64"
+      AMI_PARAM_PATH_X86      = data.aws_ssm_parameter.ami_x86.name
+      AMI_PARAM_PATH_ARM64    = data.aws_ssm_parameter.ami_arm.name
       TEMPLATE_ARN_X86        = aws_launch_template.x86.id
       TEMPLATE_ARN_ARM        = aws_launch_template.arm.id
       AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument"
