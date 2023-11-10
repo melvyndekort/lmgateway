@@ -17,15 +17,15 @@ data "template_file" "x86" {
   template = file("${path.module}/templates/lmgateway.sh")
 
   vars = {
-    arch                     = "x86_64"
-    region                   = data.aws_region.current.name
-    hosted_zone_id           = data.terraform_remote_state.cloudsetup.outputs.mdekort_zone_id
-    hosted_zone_name         = "mdekort.nl"
-    private_key              = local.secrets.wireguard.gw_private_key
-    public_key               = local.secrets.wireguard.lmrouter_public_key
-    user_password            = local.secrets.linux.user_password
-    cloudflare_token         = aws_ssm_parameter.cloudflare_token.name
-    newrelic_key             = aws_ssm_parameter.newrelic_key.name
+    arch             = "x86_64"
+    region           = data.aws_region.current.name
+    hosted_zone_id   = data.terraform_remote_state.cloudsetup.outputs.mdekort_zone_id
+    hosted_zone_name = "mdekort.nl"
+    private_key      = local.secrets.wireguard.gw_private_key
+    public_key       = local.secrets.wireguard.lmrouter_public_key
+    user_password    = local.secrets.linux.user_password
+    cloudflare_token = aws_ssm_parameter.cloudflare_token.name
+    newrelic_key     = aws_ssm_parameter.newrelic_key.name
   }
 }
 
@@ -33,15 +33,15 @@ data "template_file" "arm" {
   template = file("${path.module}/templates/lmgateway.sh")
 
   vars = {
-    arch                     = "arm64"
-    region                   = data.aws_region.current.name
-    hosted_zone_id           = data.terraform_remote_state.cloudsetup.outputs.mdekort_zone_id
-    hosted_zone_name         = "mdekort.nl"
-    private_key              = local.secrets.wireguard.gw_private_key
-    public_key               = local.secrets.wireguard.lmrouter_public_key
-    user_password            = local.secrets.linux.user_password
-    cloudflare_token         = aws_ssm_parameter.cloudflare_token.name
-    newrelic_key             = aws_ssm_parameter.newrelic_key.name
+    arch             = "arm64"
+    region           = data.aws_region.current.name
+    hosted_zone_id   = data.terraform_remote_state.cloudsetup.outputs.mdekort_zone_id
+    hosted_zone_name = "mdekort.nl"
+    private_key      = local.secrets.wireguard.gw_private_key
+    public_key       = local.secrets.wireguard.lmrouter_public_key
+    user_password    = local.secrets.linux.user_password
+    cloudflare_token = aws_ssm_parameter.cloudflare_token.name
+    newrelic_key     = aws_ssm_parameter.newrelic_key.name
   }
 }
 
