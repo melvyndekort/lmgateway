@@ -44,7 +44,6 @@ data "aws_iam_policy_document" "lmgateway" {
 
     resources = [
       aws_ssm_parameter.ansible_vault_pass.arn,
-      aws_ssm_parameter.cloudflare_token.arn,
       aws_ssm_parameter.newrelic_key.arn,
     ]
   }

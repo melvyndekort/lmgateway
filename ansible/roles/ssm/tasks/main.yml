@@ -1,0 +1,15 @@
+---
+- name: Install SSM
+  notify:
+    - 'Restart SSM'
+  block:
+    - name: Install SSM Agent (x86_64)
+      when: ansible_facts['ansible_architecture'] == 'x86_64'
+      ansible.builtin.dnf:
+        name: 'https://s3.dualstack.us-east-1.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm'
+        state: present
+    - name: Install SSM Agent (arm64)
+      when: ansible_facts['ansible_architecture'] == 'aarch64'
+      ansible.builtin.dnf:
+        name: 'https://s3.dualstack.us-east-1.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_arm64/amazon-ssm-agent.rpm'
+        state: present

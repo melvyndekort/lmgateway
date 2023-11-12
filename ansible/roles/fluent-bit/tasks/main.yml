@@ -1,0 +1,112 @@
+---
+- name: Configure fluent-bit
+  notify:
+    - 'Restart fluent-bit'
+  block:
+    - name: Configure dnf repository
+      ansible.builtin.copy:
+        dest: /etc/yum.repos.d/fluent-bit.repo
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [fluent-bit]
+          name = Fluent Bit
+          baseurl = https://packages.fluentbit.io/amazonlinux/2022/$basearch/
+          gpgcheck=1
+          gpgkey=https://packages.fluentbit.io/fluentbit.key
+          enabled=1
+
+    - name: Install through dnf
+      ansible.builtin.dnf:
+        name: 'fluent-bit'
+        state: present
+
+    - name: Create lib directory
+      ansible.builtin.file:
+        path: /etc/fluent-bit/lib
+        state: directory
+        mode: '0755'
+        owner: root:root
+
+    - name: Create run directory
+      ansible.builtin.file:
+        path: /run/fluent-bit
+        state: directory
+        mode: '0755'
+        owner: root:root
+
+    - name: Install New Relic plugin
+      block:
+        - name: Download plugin from S3 (x86_64)
+          when: ansible_facts['ansible_architecture'] == 'x86_64'
+          amazon.aws.s3_object:
+            bucket: mdekort.artifacts
+            dualstack: true
+            object: out_newrelic-linux-amd64-1.17.3.so
+            dest: /etc/fluent-bit/lib/out_newrelic.so
+            mode: get
+        - name: Download plugin from S3 (arm64)
+          when: ansible_facts['ansible_architecture'] == 'aarch64'
+          amazon.aws.s3_object:
+            bucket: mdekort.artifacts
+            dualstack: true
+            object: out_newrelic-linux-arm64-1.17.3.so
+            dest: /etc/fluent-bit/lib/out_newrelic.so
+            mode: get
+
+    - name: Plugin configuration
+      ansible.builtin.copy:
+        dest: /etc/fluent-bit/plugins.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [PLUGINS]
+            Path /etc/fluent-bit/lib/out_newrelic.so
+
+    - name: Retrieve secret from SSM Parameter Store
+      ansible.builtin.set_fact:
+        newrelic_key: "{{ lookup('amazon.aws.aws_ssm', lookup('ansible.builtin.env', 'SSM_NEWRELIC_KEY')) }}"
+        cacheable: false
+
+    - name: Configuration file
+      ansible.builtin.copy:
+        dest: /etc/fluent-bit/fluent-bit.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [SERVICE]
+              flush            1
+              daemon           Off
+              log_level        info
+              parsers_file     parsers.conf
+              plugins_file     plugins.conf
+              http_server      On
+              http_listen      0.0.0.0
+              http_port        2020
+              storage.metrics  on
+
+          [INPUT]
+              Name                systemd
+              Path                /var/log/journal
+              DB                  /run/fluent-bit/journal.db
+              Tag                 journal.*
+              Systemd_Filter      _SYSTEMD_UNIT=amazon-ssm-agent.service
+              Systemd_Filter      _SYSTEMD_UNIT=fluent-bit.service
+              Systemd_Filter      _SYSTEMD_UNIT=sshd.service
+              Systemd_Filter      _SYSTEMD_UNIT=systemd-logind.service
+              Systemd_Filter      _SYSTEMD_UNIT=wg-quick@wg0.service
+              Systemd_Filter_Type Or
+
+          [FILTER]
+              Name   modify
+              Match  journal.*
+              Copy   _HOSTNAME hostname
+
+          [OUTPUT]
+              Name        newrelic
+              Match       *
+              endpoint    https://log-api.eu.newrelic.com/log/v1
+              licenseKey  {{ newrelic_key }}

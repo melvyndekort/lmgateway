@@ -11,7 +11,6 @@ data "template_file" "x86" {
   vars = {
     ANSIBLE_S3_BUCKET      = aws_s3_bucket.ansible.name
     SSM_ANSIBLE_VAULT_PASS = aws_ssm_parameter.ansible_vault_pass.name
-    SSM_CLOUDFLARE_TOKEN   = aws_ssm_parameter.cloudflare_token.name
     SSM_NEWRELIC_KEY       = aws_ssm_parameter.newrelic_key.name
   }
 }
@@ -22,7 +21,6 @@ data "template_file" "arm" {
   vars = {
     ANSIBLE_S3_BUCKET      = aws_s3_bucket.ansible.name
     SSM_ANSIBLE_VAULT_PASS = aws_ssm_parameter.ansible_vault_pass.name
-    SSM_CLOUDFLARE_TOKEN   = aws_ssm_parameter.cloudflare_token.name
     SSM_NEWRELIC_KEY       = aws_ssm_parameter.newrelic_key.name
   }
 }

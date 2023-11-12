@@ -26,7 +26,7 @@
     owner: melvyn:melvyn
     content: '{{ authorized_keys }}'
 
-- name:
+- name: Create SSH config
   ansible.builtin.copy:
     dest: /home/melvyn/.ssh/config
     mode: '0600'
