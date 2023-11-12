@@ -11,9 +11,6 @@ ln -fs /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 echo 'NTP=169.254.169.123' >> /etc/systemd/timesyncd.conf
 systemctl enable --now systemd-timesyncd
 
-# Configure aws-cli
-aws configure set default.region eu-west-1
-
 # Configure DNF to use IPv6
 echo 'ip_resolve=IPv6' >> /etc/dnf/dnf.conf
 
