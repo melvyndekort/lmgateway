@@ -6,6 +6,11 @@ data "aws_ssm_parameter" "ami_arm" {
   name = var.ssm_arm
 }
 
+resource "random_password" "ansible_vault_pass" {
+  length  = 40
+  special = true
+}
+
 resource "aws_ssm_parameter" "user_password" {
   name  = "/linux/user_password"
   type  = "SecureString"
