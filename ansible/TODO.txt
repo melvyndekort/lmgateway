@@ -1,56 +1,3 @@
-# Set root password
-USER_PASSWORD="$(get_ssm_param ${user_password})"
-echo "root:$USER_PASSWORD" | chpasswd -e
-
-# User config
-useradd -G wheel -s /bin/bash -m -p "$USER_PASSWORD" melvyn
-
-mkdir -p /home/melvyn/.ssh
-
-cat << EOF > /home/melvyn/.ssh/authorized_keys
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMFJhPTPfNQuNCuz9AESupcGOwLtg8Xp+qTnv2+qU94O ed25519
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCuyHMuKWZIxf63X1Ve6nU6+D/Ku+Y6c2pC8OYMDbzQrxr1AQCvoxP/zVimLbl4cur66GXE3RqcRH6UHC1q6YR2vlWBcZvDlojnHWRmqvcFlsuv7RxdF5DVatzrfQ6l1m0jy+Ey3djBGKwH5fIxKTpMZVkERFXYSNDLwyMqTisbBI9e32nOHFeG5dcH6mdloAyICbdMnDTn5pl1ztjEOqZ+TKtv0ZEf4o0iHMCKFwJBJnJ2OGTqNycjt6VeTPaMdpGetfCxCuA7lmdGV6IoooEkxKTp9J1+DBmTTGgo1ivfb6EZVSL6EQysieL+eYhcASKkiKaoQOylqysHbk49TJUBMX2H3yLq9N80h6dhDjtdWtCpuaD0KKpnxF5J3agi9z2gywVgzv38hik2ApE1T0ny/ZtwnnXOw3sNMaS6yBp9yw/KqsuKBrSqDYufqQbsce/sAjzR4B4ELauvol0AvlK+5gSDTZoDI6VgbOyJkFVFZbkOqAXTZZ/cBPJ8+ZzSBsNjW6YHvl7mJsdi9ZuUT2OhH2CKF3+rcVaBBcdzMqSMcwUWYf5J4n7yTleCuPau+klkHzM+QbHEPN+65dSqdk0nwgSiwK0OaalHuYNVlNPyji1lkLVLFwsgpE7lIpRxPrYOI6fVY/Fo0EhW3oIktvyohKRF1TaISsILRr2m/b7VLQ== rsa
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCse8TLb47f+zddmzm0EvO6+RK8eeQouClEFA33ftG6+ioiJxkNf+vXwtWVlmA4JzwhLDQ5tKk+SQ9OTg/JMB8O9VfaK9LHxhJhLdiNo+P8W/vK9BI6CNCA1F+rbzN3OtEavYum7eHxeUrnYM+VkGyUpi5zmbHYF30VgxYeLMoK66eriFo+EHoQwv137uUgGYxe1BLGwkHjWdZ6wgjPkZTu4QoAsdxptVZH16TsFJKEQJdetJbJQ+I86yPjZ4AU5ImzdWUbUA4ic8gIZDhZeLz2UCmRB/EilNVKzQb+m54rE+cRH7f63zcEkqnAb5Ugz+XRMtdtqxcx2x9Eza2ohk8ZblyE8s3D2c4KR4YKzZJhuakK/sQ9FKOJo6vy2G6Mq1PMUhMF3rn+whUzXBpV2A0XK8P0H7/D+7zsGnQH+NZb6akgE+SqonL+zK430xWhWvoE7irtPh9CeG8+AF9OD+nbGBs22HpXCeR+yW2tPfJQtHLBOkaWyzJIsqfl4cMWaCRMnRKl/QEJuu9dG3rtOcZyBvkBnKd0X1GNIN5t1BMuhKghkipBgrG2oMM3hBRafHafrg26ikIImuImqVvaWZWeKKjU5tsivu/PELa4vyF/PqJ7meFqf1V2Jpw2Z21nSVQsgXK34Kbx5r6GSIdea+9cdEsJabKS7VrqwmSY8NjCZQ== yubikey
-EOF
-
-cat << EOF > /home/melvyn/.ssh/config
-Host lmrouter
-  Hostname 10.204.10.1
-  User root
-
-Host lm-ap-1 lmap1 ap1
-  Hostname 10.204.50.11
-  User root
-
-Host lm-ap-2 lmap2 ap2
-  Hostname 10.204.50.12
-  User root
-
-Host lm-ap-3 lmap3 ap3
-  Hostname 10.204.50.13
-  User root
-
-Host lm-ap-4 lmap4 ap4
-  Hostname 10.204.50.14
-  User root
-
-Host lmserver
-  Hostname 10.204.10.2
-  User core
-
-Host melvynpc
-  Hostname melvynpc.mdekort.lan
-  User melvyn
-
-Host tuinhuis
-  Hostname tuinhuis.mdekort.lan
-  User pi
-EOF
-
-chmod 700 /home/melvyn/.ssh
-chmod 600 /home/melvyn/.ssh/config
-chown -R melvyn:melvyn /home/melvyn/.ssh
-
 # Hostname
 hostnamectl hostname lmgateway
 cat << EOF >> /etc/hosts
@@ -149,37 +96,11 @@ dnf install -y vim-enhanced nmap telnet dnsutils tmux ncurses-term htop git wire
 
 # Configure WireGuard connection
 cat << EOF > /etc/systemd/network/wg0.netdev
-[NetDev]
-Name=wg0
-Kind=wireguard
-Description=WireGuard tunnel wg0
-
-[WireGuard]
-ListenPort=51820
-PrivateKey=${private_key}
-
-[WireGuardPeer]
-PublicKey=${public_key}
-AllowedIPs=10.204.0.0/16
-Endpoint=vpn6.mdekort.nl:51820
-EOF
 
 chown root:systemd-network /etc/systemd/network/wg0.netdev
 chmod 640 /etc/systemd/network/wg0.netdev
 
 cat << EOF > /etc/systemd/network/wg0.network
-[Match]
-Name=wg0
-
-[Network]
-Address=10.204.40.2/24
-Domains=mdekort.lan
-DNS=10.204.40.1
-
-[Route]
-Gateway=10.204.40.1
-Destination=10.204.0.0/16
-EOF
 
 networkctl reload
 
@@ -187,21 +108,6 @@ networkctl reload
 dnf install -y dnsmasq
 
 cat << EOF >> /etc/dnsmasq.d/wireguard.conf
-# Don't needlessly read /etc/resolv.conf
-no-resolv
-
-# Upstream DNS servers (Amazon)
-server=169.254.169.253
-server=fd00:ec2::253
-
-# Forward all domains ending in mdekort.lan to 10.204.40.1
-server=/mdekort.lan/10.204.40.1
-
-# Add custom domain to hosts in the network
-local=/mdekort.lan/
-domain=mdekort.lan
-expand-hosts
-EOF
 
 systemctl enable --now dnsmasq
 
