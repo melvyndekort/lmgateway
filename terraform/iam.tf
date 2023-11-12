@@ -43,6 +43,7 @@ data "aws_iam_policy_document" "lmgateway" {
     ]
 
     resources = [
+      aws_ssm_parameter.ansible_vault_pass.arn,
       aws_ssm_parameter.cloudflare_token.arn,
       aws_ssm_parameter.newrelic_key.arn,
     ]
@@ -56,7 +57,9 @@ data "aws_iam_policy_document" "lmgateway" {
 
     resources = [
       "arn:aws:s3:::mdekort.artifacts",
-      "arn:aws:s3:::mdekort.artifacts/*"
+      "arn:aws:s3:::mdekort.artifacts/*",
+      aws_s3_bucket.ansible.arn,
+      "${aws_s3_bucket.ansible.arn}/*",
     ]
   }
 }

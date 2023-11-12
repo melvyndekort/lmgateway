@@ -1,0 +1,21 @@
+---
+- name: "Configuring EC2 instance"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Gather EC2 metadata facts
+      amazon.aws.ec2_metadata_facts:
+
+    - name: Check instance type
+      ansible.builtin.debug:
+        msg: "This instance is a t1.micro"
+      when: ansible_ec2_instance_type == "t1.micro"
+
+    - name: Retrieve secrets from SSM Parameter Store
+      ansible.builtin.set_fact:
+        cloudflare_token: "{{ lookup('amazon.aws.aws_ssm', '$SSM_CLOUDFLARE_TOKEN') }}"
+        newrelic_key: "{{ lookup('amazon.aws.aws_ssm', '$SSM_NEWRELIC_KEY') }}"
+        cacheable: false
+      environment:
+        SSM_CLOUDFLARE_TOKEN: "{{ lookup('ansible.builtin.env', 'SSM_CLOUDFLARE_TOKEN') }}"
+        SSM_NEWRELIC_KEY: "{{ lookup('ansible.builtin.env', 'SSM_NEWRELIC_KEY') }}"

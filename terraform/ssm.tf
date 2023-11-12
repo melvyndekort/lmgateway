@@ -11,20 +11,20 @@ resource "random_password" "ansible_vault_pass" {
   special = true
 }
 
-resource "aws_ssm_parameter" "user_password" {
-  name  = "/linux/user_password"
+resource "aws_ssm_parameter" "ansible_vault_pass" {
+  name  = "/lmgateway/ansible_vault_password"
   type  = "SecureString"
-  value = local.secrets.linux.user_password
+  value = random_password.ansible_vault_pass.result
 }
 
 resource "aws_ssm_parameter" "cloudflare_token" {
-  name  = "/cloudflare/lmgateway_token"
+  name  = "/lmgateway/cloudflare_token"
   type  = "SecureString"
   value = data.terraform_remote_state.cloudsetup.outputs.api_token_lmgateway
 }
 
 resource "aws_ssm_parameter" "newrelic_key" {
-  name  = "/newrelic/key"
+  name  = "/lmgateway/newrelic_key"
   type  = "SecureString"
   value = data.terraform_remote_state.cloudsetup.outputs.newrelic_lmgateway_ingest_key
 }
