@@ -9,10 +9,12 @@ data "archive_file" "empty_lambda" {
   output_path = "lambda.zip"
 
   source {
-    filename = "ami_refresher/handler.py"
+    filename = "bootstrap"
     content  = <<EOF
-def handle(event, context):
-  raise NotImplementedError
+#!/bin/sh
+
+echo 'Not implemented'
+exit 1
 EOF
   }
 }
@@ -25,28 +27,16 @@ resource "aws_lambda_function" "ami_refresher" {
   filename         = data.archive_file.empty_lambda.output_path
   source_code_hash = data.archive_file.empty_lambda.output_base64sha256
 
-  layers = [
-    "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-20-0:2",
-  ]
-
-  runtime       = "python3.9"
+  runtime       = "provided.al2023"
   architectures = ["arm64"]
   memory_size   = 128
-  timeout       = 8
+  timeout       = 900
 
   tracing_config {
     mode = "Active"
   }
 
   kms_key_arn = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
-
-  environment {
-    variables = {
-      TEMPLATE_ARN_X86        = aws_launch_template.x86.id
-      TEMPLATE_ARN_ARM        = aws_launch_template.arm.id
-      AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument"
-    }
-  }
 
   depends_on = [
     aws_iam_role_policy.ami_refresher,

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd $LAMBDA_TASK_ROOT
+packer init .
+packer build aws-lmgateway.pkr.hcl
