@@ -3,4 +3,5 @@
   ansible.builtin.service:
     name: amazon-ssm-agent
     state: stopped
-    enabled: true
+    # currently disabled, since AWS SSM doesn't support IPv6
+    enabled: false
