@@ -1,7 +1,7 @@
 ---
 - name: Configure fluent-bit
   notify:
-    - 'Restart fluent-bit'
+    - 'Enable fluent-bit'
   block:
     - name: Configure dnf repository
       ansible.builtin.copy:
@@ -26,34 +26,36 @@
       ansible.builtin.file:
         path: /etc/fluent-bit/lib
         state: directory
+        owner: root
+        group: root
         mode: '0755'
-        owner: root:root
 
     - name: Create run directory
       ansible.builtin.file:
         path: /run/fluent-bit
         state: directory
+        owner: root
+        group: root
         mode: '0755'
-        owner: root:root
 
     - name: Install New Relic plugin
       block:
         - name: Download plugin from S3 (x86_64)
-          when: ansible_facts['ansible_architecture'] == 'x86_64'
-          amazon.aws.s3_object:
-            bucket: mdekort.artifacts
-            dualstack: true
-            object: out_newrelic-linux-amd64-1.17.3.so
+          when: ansible_architecture == 'x86_64'
+          ansible.builtin.get_url:
+            url: https://github.com/newrelic/newrelic-fluent-bit-output/releases/download/v1.17.3/out_newrelic-linux-amd64-1.17.3.so
             dest: /etc/fluent-bit/lib/out_newrelic.so
-            mode: get
+            owner: root
+            group: root
+            mode: '0644'
         - name: Download plugin from S3 (arm64)
-          when: ansible_facts['ansible_architecture'] == 'aarch64'
-          amazon.aws.s3_object:
-            bucket: mdekort.artifacts
-            dualstack: true
-            object: out_newrelic-linux-arm64-1.17.3.so
+          when: ansible_architecture == 'aarch64'
+          ansible.builtin.get_url:
+            url: https://github.com/newrelic/newrelic-fluent-bit-output/releases/download/v1.17.3/out_newrelic-linux-arm64-1.17.3.so
             dest: /etc/fluent-bit/lib/out_newrelic.so
-            mode: get
+            owner: root
+            group: root
+            mode: '0644'
 
     - name: Plugin configuration
       ansible.builtin.copy:
@@ -67,7 +69,7 @@
 
     - name: Retrieve secret from SSM Parameter Store
       ansible.builtin.set_fact:
-        newrelic_key: "{{ lookup('amazon.aws.aws_ssm', lookup('ansible.builtin.env', 'SSM_NEWRELIC_KEY')) }}"
+        newrelic_key: "{{ lookup('amazon.aws.aws_ssm', '/lmgateway/newrelic_key', region=ansible_ec2_instance_identity_document_region) }}"
         cacheable: false
 
     - name: Configuration file

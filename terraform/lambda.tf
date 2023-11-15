@@ -42,8 +42,6 @@ resource "aws_lambda_function" "ami_refresher" {
 
   environment {
     variables = {
-      AMI_PARAM_PATH_X86      = var.ssm_x86
-      AMI_PARAM_PATH_ARM64    = var.ssm_arm
       TEMPLATE_ARN_X86        = aws_launch_template.x86.id
       TEMPLATE_ARN_ARM        = aws_launch_template.arm.id
       AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument"

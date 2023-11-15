@@ -21,7 +21,7 @@
 
 - name: Configure dnsmasq
   notify:
-    - 'Restart dnsmasq'
+    - 'Enable dnsmasq'
   block:
     - name: Install through dnf
       ansible.builtin.dnf:

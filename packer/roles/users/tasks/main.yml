@@ -1,15 +1,10 @@
 ---
-- name: Set root password
-  ansible.builtin.user:
-    name: root
-    password: '{{ linux_password }}'
-
 - name: Create user melvyn
   ansible.builtin.user:
     name: melvyn
     append: true
     groups: ['wheel']
-    password: '{{ linux_password }}'
+    password: '{{ user_password }}'
     shell: '/bin/bash'
 
 - name: Create .ssh directory for melvyn
@@ -17,18 +12,21 @@
     path: /home/melvyn/.ssh
     state: directory
     mode: '0700'
-    owner: melvyn:melvyn
+    owner: melvyn
+    group: melvyn
 
 - name: Create authorized_keys for melvyn
   ansible.builtin.copy:
     dest: /home/melvyn/.ssh/authorized_keys
     mode: '0664'
-    owner: melvyn:melvyn
+    owner: melvyn
+    group: melvyn
     content: '{{ authorized_keys }}'
 
 - name: Create SSH config
   ansible.builtin.copy:
     dest: /home/melvyn/.ssh/config
     mode: '0600'
-    owner: melvyn:melvyn
+    owner: melvyn
+    group: melvyn
     content: '{{ ssh_config }}'

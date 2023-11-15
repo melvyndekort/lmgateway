@@ -10,3 +10,4 @@ package/
 coverage.xml
 wheelhouse/
 secrets.yaml
+.packer.d/

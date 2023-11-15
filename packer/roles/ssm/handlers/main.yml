@@ -1,6 +1,6 @@
 ---
-- name: Restart SSM
+- name: Enable SSM agent
   ansible.builtin.service:
     name: amazon-ssm-agent
-    state: restarted
+    state: stopped
     enabled: true

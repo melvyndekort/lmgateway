@@ -1,0 +1,7 @@
+---
+- name: Install SSM agent
+  ansible.builtin.dnf:
+    name: amazon-ssm-agent
+    state: present
+  notify:
+    - 'Enable SSM agent'

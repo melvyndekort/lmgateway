@@ -1,11 +1,14 @@
 ---
+- name: Gather facts from AWS metadata endpoint
+  amazon.aws.ec2_metadata_facts:
+
 - name: Set timezone to Europe/Amsterdam
   community.general.timezone:
     name: Europe/Amsterdam
 
 - name: Set NTP server
   notify:
-    - 'Restart timesyncd'
+    - 'Enable timesyncd'
   ansible.builtin.lineinfile:
     path: /etc/systemd/timesyncd.conf
     regexp: '^NTP='

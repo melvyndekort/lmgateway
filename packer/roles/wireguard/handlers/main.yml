@@ -2,8 +2,8 @@
 - name: Reload network
   ansible.builtin.command: networkctl reload
 
-- name: Restart dnsmasq
+- name: Enable dnsmasq
   ansible.builtin.service:
     name: dnsmasq
-    state: restarted
+    state: stopped
     enabled: true

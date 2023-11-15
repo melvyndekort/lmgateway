@@ -1,5 +1,5 @@
-#LMGATEWAY
-data "aws_iam_policy_document" "lmgateway_assume" {
+# ASSUME POLICIES
+data "aws_iam_policy_document" "ec2_assume" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -10,32 +10,32 @@ data "aws_iam_policy_document" "lmgateway_assume" {
   }
 }
 
-resource "aws_iam_role" "lmgateway" {
-  name = "lmgateway"
+data "aws_iam_policy_document" "lambda_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+
+# LMGATEWAY INSTALLER
+resource "aws_iam_role" "lmgateway_installer" {
+  name = "lmgateway-installer"
   path = "/system/"
 
-  assume_role_policy = data.aws_iam_policy_document.lmgateway_assume.json
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
 }
 
-data "aws_iam_policy" "ssm" {
-  name = "AmazonSSMManagedInstanceCore"
+resource "aws_iam_instance_profile" "lmgateway_installer" {
+  name = "lmgateway-installer"
+  role = aws_iam_role.lmgateway_installer.name
 }
 
-resource "aws_iam_role_policy_attachment" "ssm" {
-  role       = aws_iam_role.lmgateway.id
-  policy_arn = data.aws_iam_policy.ssm.arn
-}
-
-data "aws_iam_policy" "cloudwatch" {
-  name = "CloudWatchAgentServerPolicy"
-}
-
-resource "aws_iam_role_policy_attachment" "cloudwatch" {
-  role       = aws_iam_role.lmgateway.id
-  policy_arn = data.aws_iam_policy.cloudwatch.arn
-}
-
-data "aws_iam_policy_document" "lmgateway" {
+data "aws_iam_policy_document" "lmgateway_installer" {
   statement {
     actions = [
       "ssm:GetParameter",
@@ -47,25 +47,20 @@ data "aws_iam_policy_document" "lmgateway" {
       aws_ssm_parameter.newrelic_key.arn,
     ]
   }
-
-  statement {
-    actions = [
-      "s3:List*",
-      "s3:GetObject*"
-    ]
-
-    resources = [
-      "arn:aws:s3:::mdekort.artifacts",
-      "arn:aws:s3:::mdekort.artifacts/*",
-      aws_s3_bucket.ansible.arn,
-      "${aws_s3_bucket.ansible.arn}/*",
-    ]
-  }
 }
 
-resource "aws_iam_role_policy" "lmgateway" {
-  role   = aws_iam_role.lmgateway.name
-  policy = data.aws_iam_policy_document.lmgateway.json
+resource "aws_iam_role_policy" "lmgateway_installer" {
+  role   = aws_iam_role.lmgateway_installer.name
+  policy = data.aws_iam_policy_document.lmgateway_installer.json
+}
+
+
+# LMGATEWAY
+resource "aws_iam_role" "lmgateway" {
+  name = "lmgateway"
+  path = "/system/"
+
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
 }
 
 resource "aws_iam_instance_profile" "lmgateway" {
@@ -73,23 +68,22 @@ resource "aws_iam_instance_profile" "lmgateway" {
   role = aws_iam_role.lmgateway.name
 }
 
-data "aws_iam_policy_document" "lambda_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
+data "aws_iam_policy" "ssm" {
+  name = "AmazonSSMManagedInstanceCore"
 }
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.lmgateway.id
+  policy_arn = data.aws_iam_policy.ssm.arn
+}
+
 
 # AMI-REFRESHER
 resource "aws_iam_role" "ami_refresher" {
   name = "ami_refresher"
   path = "/lambda/"
 
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
 data "aws_iam_policy_document" "ami_refresher" {
