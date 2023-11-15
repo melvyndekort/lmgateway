@@ -6,6 +6,14 @@ resource "aws_autoscaling_group" "lmgateway" {
   min_size            = 0
   capacity_rebalance  = true
 
+  instance_refresh {
+    strategy = "Rolling"
+
+    preferences {
+      min_healthy_percentage = 50
+    }
+  }
+
   launch_template {
     id      = aws_launch_template.arm.id
     version = "$Latest"
