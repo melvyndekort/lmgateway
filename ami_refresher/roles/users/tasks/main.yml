@@ -2,7 +2,6 @@
 - name: Create user melvyn
   ansible.builtin.user:
     name: melvyn
-    group: melvyn
     groups: ['wheel']
     shell: '/bin/bash'
     update_password: on_create
