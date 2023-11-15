@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 
 resource "aws_launch_template" "x86" {
   name          = "lmgateway-x86"
-  image_id      = "mdekort-lmgateway-x86_64"
+  image_id      = "ami-0abb40e211e5be214"
   instance_type = "t3a.nano"
 
   update_default_version = true
@@ -48,11 +48,15 @@ resource "aws_launch_template" "x86" {
       Name = "lmgateway"
     }
   }
+
+  lifecycle {
+    ignore_changes = [image_id]
+  }
 }
 
 resource "aws_launch_template" "arm" {
   name          = "lmgateway-arm"
-  image_id      = "mdekort-lmgateway-arm64"
+  image_id      = "ami-0847665d0bad69b7a"
   instance_type = "t4g.nano"
 
   update_default_version = true
@@ -97,5 +101,9 @@ resource "aws_launch_template" "arm" {
     tags = {
       Name = "lmgateway"
     }
+  }
+
+  lifecycle {
+    ignore_changes = [image_id]
   }
 }
