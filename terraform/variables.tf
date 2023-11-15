@@ -9,3 +9,7 @@ variable "sns_topic_region" {
 variable "desired_capacity" {
   type = number
 }
+
+variable "enable_logging" {
+  type = bool
+}

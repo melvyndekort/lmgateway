@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 
 resource "aws_launch_template" "x86" {
   name          = "lmgateway-x86"
-  image_id      = "mdekort_lmgateway_x86_64"
+  image_id      = "mdekort-lmgateway-x86_64"
   instance_type = "t3a.nano"
 
   update_default_version = true
@@ -52,7 +52,7 @@ resource "aws_launch_template" "x86" {
 
 resource "aws_launch_template" "arm" {
   name          = "lmgateway-arm"
-  image_id      = "mdekort_lmgateway_arm64"
+  image_id      = "mdekort-lmgateway-arm64"
   instance_type = "t4g.nano"
 
   update_default_version = true
