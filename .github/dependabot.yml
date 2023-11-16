@@ -9,10 +9,10 @@ updates:
       - "melvyndekort"
     reviewers:
       - "melvyndekort"
-  - package-ecosystem: "pip"
-    directory: "/"
+  - package-ecosystem: "docker"
+    directory: "/ami_refresher"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     assignees:
       - "melvyndekort"
     reviewers:
