@@ -6,10 +6,9 @@ packer init .
 packer validate .
 packer build -color=false aws-lmgateway.pkr.hcl
 
-# Configure AWS CLI
 aws configure set default.region eu-west-1
 
-# Update x86 AMI
+echo 'Updating x86_64 Image ID in SSM Parameter Store'
 ami_x86="$(aws ec2 describe-images \
   --filters 'Name=name,Values=mdekort-lmgateway-x86_64' \
   --query 'Images[*].ImageId' \
@@ -19,7 +18,7 @@ aws ssm put-parameter \
   --value "$ami_x86" \
   --overwrite
 
-# Update arm AMI
+echo 'Updating arm64 Image ID in SSM Parameter Store'
 ami_arm="$(aws ec2 describe-images \
   --filters 'Name=name,Values=mdekort-lmgateway-arm64' \
   --query 'Images[*].ImageId' \
@@ -29,7 +28,7 @@ aws ssm put-parameter \
   --value "$ami_arm" \
   --overwrite
 
-# Terminate instances
+echo 'Terminating running instances'
 instance_ids="$(aws ec2 describe-instances \
   --filters 'Name=tag:Name,Values=lmgateway' \
   --query 'Reservations[*].Instances[*].[InstanceId]' \
