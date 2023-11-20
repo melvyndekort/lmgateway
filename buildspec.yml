@@ -39,8 +39,8 @@ phases:
         --overwrite
       - echo 'Terminating running instances'
       - >
-        instance_ids="$(aws ec2 describe-instances
+        aws ec2 terminate-instances --instance-ids
+        $(aws ec2 describe-instances
         --filters 'Name=tag:Name,Values=lmgateway'
-        --query 'Reservations[*].Instances[*].[InstanceId]'
-        --output text)"
-      - aws ec2 terminate-instances --instance-ids "$instance_ids"
+        --query 'Reservations[*].Instances[*].InstanceId[]'
+        --output text)
