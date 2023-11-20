@@ -11,7 +11,7 @@ resource "aws_cloudwatch_log_group" "codebuild" {
 resource "aws_codebuild_project" "lmgateway" {
   name = local.codebuild_name
 
-  service_role = aws_iam_role.ami_refresher_codebuild.arn
+  service_role = aws_iam_role.codebuild.arn
 
   badge_enabled          = true
   build_timeout          = 30

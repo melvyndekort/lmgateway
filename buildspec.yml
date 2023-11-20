@@ -7,7 +7,7 @@ phases:
       - aws configure set default.region eu-west-1
   pre_build:
     commands:
-      - cd ami_refresher
+      - cd ami_builder
       - packer init .
       - packer validate .
   build:

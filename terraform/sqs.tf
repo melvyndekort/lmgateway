@@ -1,9 +1,9 @@
-resource "aws_sqs_queue" "ami_updates_queue" {
-  name          = "ami-updates-queue"
+resource "aws_sqs_queue" "ami_updates" {
+  name          = "ami-updates"
   delay_seconds = 900
 }
 
-data "aws_iam_policy_document" "ami_updates_queue" {
+data "aws_iam_policy_document" "ami_updates" {
   statement {
     effect = "Allow"
 
@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "ami_updates_queue" {
     }
 
     actions   = ["sqs:SendMessage"]
-    resources = [aws_sqs_queue.ami_updates_queue.arn]
+    resources = [aws_sqs_queue.ami_updates.arn]
 
     condition {
       test     = "ArnEquals"
@@ -23,9 +23,9 @@ data "aws_iam_policy_document" "ami_updates_queue" {
   }
 }
 
-resource "aws_sqs_queue_policy" "ami_updates_queue" {
-  queue_url = aws_sqs_queue.ami_updates_queue.id
-  policy    = data.aws_iam_policy_document.ami_updates_queue.json
+resource "aws_sqs_queue_policy" "ami_updates" {
+  queue_url = aws_sqs_queue.ami_updates.id
+  policy    = data.aws_iam_policy_document.ami_updates.json
 }
 
 resource "aws_sns_topic_subscription" "ami_updates_sqs_target" {
@@ -33,7 +33,7 @@ resource "aws_sns_topic_subscription" "ami_updates_sqs_target" {
 
   topic_arn = var.sns_topic_arn
   protocol  = "sqs"
-  endpoint  = aws_sqs_queue.ami_updates_queue.arn
+  endpoint  = aws_sqs_queue.ami_updates.arn
 }
 
 resource "aws_sns_topic_subscription" "ami_updates_email_target" {

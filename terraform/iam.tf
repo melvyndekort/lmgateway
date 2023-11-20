@@ -33,14 +33,14 @@ data "aws_iam_policy_document" "codebuild_assume" {
 }
 
 
-# SQS -> PIPES -> FARGATE
-resource "aws_iam_role" "ami_refresher_pipes" {
-  name               = "ami-refresher-pipes"
+# SQS -> PIPES -> EVENTBRIDGE
+resource "aws_iam_role" "ami_updates_pipes" {
+  name               = "ami-updates-pipes"
   path               = "/system/"
   assume_role_policy = data.aws_iam_policy_document.pipes_assume.json
 }
 
-data "aws_iam_policy_document" "ami_refresher_pipes" {
+data "aws_iam_policy_document" "ami_updates_pipes" {
   statement {
     actions = [
       "sqs:DeleteMessage",
@@ -48,41 +48,57 @@ data "aws_iam_policy_document" "ami_refresher_pipes" {
       "sqs:ReceiveMessage",
     ]
     resources = [
-      aws_sqs_queue.ami_updates_queue.arn,
+      aws_sqs_queue.ami_updates.arn,
     ]
   }
   statement {
     actions = [
-      "ecs:RunTask",
+      "events:PutEvents",
     ]
     resources = [
       "*",
     ]
   }
+}
+
+resource "aws_iam_role_policy" "ami_updates_pipes" {
+  role   = aws_iam_role.ami_updates_pipes.name
+  policy = data.aws_iam_policy_document.ami_updates_pipes.json
+}
+
+
+# EVENTBRIDGE -> CODEBUILD
+resource "aws_iam_role" "ami_updates_eventbridge" {
+  name               = "ami-updates-eventbridge"
+  path               = "/system/"
+  assume_role_policy = data.aws_iam_policy_document.pipes_assume.json
+}
+
+data "aws_iam_policy_document" "ami_updates_eventbridge" {
   statement {
     actions = [
-      "iam:PassRole",
+      "codebuild:*",
     ]
     resources = [
-      aws_iam_role.ami_refresher_codebuild.arn,
+      aws_codebuild_project.lmgateway.arn,
     ]
   }
 }
 
-resource "aws_iam_role_policy" "ami_refresher_pipes" {
-  role   = aws_iam_role.ami_refresher_pipes.name
-  policy = data.aws_iam_policy_document.ami_refresher_pipes.json
+resource "aws_iam_role_policy" "ami_updates_eventbridge" {
+  role   = aws_iam_role.ami_updates_eventbridge.name
+  policy = data.aws_iam_policy_document.ami_updates_eventbridge.json
 }
 
 
 # AMI-REFRESHER TASK
-resource "aws_iam_role" "ami_refresher_codebuild" {
-  name               = "ami-refresher-codebuild"
+resource "aws_iam_role" "codebuild" {
+  name               = "lmgateway-codebuild"
   path               = "/system/"
   assume_role_policy = data.aws_iam_policy_document.codebuild_assume.json
 }
 
-data "aws_iam_policy_document" "ami_refresher_codebuild" {
+data "aws_iam_policy_document" "codebuild" {
   statement {
     actions = [
       "ec2:*",
@@ -96,7 +112,7 @@ data "aws_iam_policy_document" "ami_refresher_codebuild" {
       "iam:GetInstanceProfile"
     ]
     resources = [
-      aws_iam_instance_profile.ami_refresher_installer.arn
+      aws_iam_instance_profile.installer.arn
     ]
   }
   statement {
@@ -104,7 +120,7 @@ data "aws_iam_policy_document" "ami_refresher_codebuild" {
       "iam:PassRole",
     ]
     resources = [
-      aws_iam_role.ami_refresher_installer.arn
+      aws_iam_role.installer.arn
     ]
   }
   statement {
@@ -130,26 +146,26 @@ data "aws_iam_policy_document" "ami_refresher_codebuild" {
   }
 }
 
-resource "aws_iam_role_policy" "ami_refresher_codebuild" {
-  role   = aws_iam_role.ami_refresher_codebuild.name
-  policy = data.aws_iam_policy_document.ami_refresher_codebuild.json
+resource "aws_iam_role_policy" "codebuild" {
+  role   = aws_iam_role.codebuild.name
+  policy = data.aws_iam_policy_document.codebuild.json
 }
 
 
 # AMI-REFRESHER INSTALLER
-resource "aws_iam_role" "ami_refresher_installer" {
-  name = "ami-refresher-installer"
+resource "aws_iam_role" "installer" {
+  name = "lmgateway-installer"
   path = "/system/"
 
   assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
 }
 
-resource "aws_iam_instance_profile" "ami_refresher_installer" {
-  name = "ami-refresher-installer"
-  role = aws_iam_role.ami_refresher_installer.name
+resource "aws_iam_instance_profile" "installer" {
+  name = "lmgateway-installer"
+  role = aws_iam_role.installer.name
 }
 
-data "aws_iam_policy_document" "ami_refresher_installer" {
+data "aws_iam_policy_document" "installer" {
   statement {
     actions = [
       "ssm:GetParameter",
@@ -163,9 +179,9 @@ data "aws_iam_policy_document" "ami_refresher_installer" {
   }
 }
 
-resource "aws_iam_role_policy" "ami_refresher_installer" {
-  role   = aws_iam_role.ami_refresher_installer.name
-  policy = data.aws_iam_policy_document.ami_refresher_installer.json
+resource "aws_iam_role_policy" "installer" {
+  role   = aws_iam_role.installer.name
+  policy = data.aws_iam_policy_document.installer.json
 }
 
 

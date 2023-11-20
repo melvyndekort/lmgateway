@@ -51,7 +51,7 @@ source "amazon-ebs" "lmgateway_x86_64" {
   }
 
   associate_public_ip_address = true
-  iam_instance_profile        = "ami-refresher-installer"
+  iam_instance_profile        = "lmgateway-installer"
   ssh_username                = "ec2-user"
   force_deregister            = true
   force_delete_snapshot       = true
@@ -97,7 +97,7 @@ source "amazon-ebs" "lmgateway_arm64" {
   }
 
   associate_public_ip_address = true
-  iam_instance_profile        = "ami-refresher-installer"
+  iam_instance_profile        = "lmgateway-installer"
   ssh_username                = "ec2-user"
   force_deregister            = true
   force_delete_snapshot       = true
