@@ -1,8 +1,8 @@
 resource "aws_codebuild_project" "lmgateway" {
   name = "lmgateway-ami"
 
-  service_role         = aws_iam_role.ami_refresher_task.name
-  resource_access_role = aws_iam_role.ami_refresher_execution.name
+  service_role         = aws_iam_role.ami_refresher_task.arn
+  resource_access_role = aws_iam_role.ami_refresher_execution.arn
 
   badge_enabled          = true
   build_timeout          = 30
