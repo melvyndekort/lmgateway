@@ -21,13 +21,13 @@ data "aws_iam_policy_document" "pipes_assume" {
   }
 }
 
-data "aws_iam_policy_document" "ecs_assume" {
+data "aws_iam_policy_document" "codebuild_assume" {
   statement {
     actions = ["sts:AssumeRole"]
 
     principals {
       type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com", "codebuild.amazonaws.com"]
+      identifiers = ["codebuild.amazonaws.com"]
     }
   }
 }
@@ -64,8 +64,7 @@ data "aws_iam_policy_document" "ami_refresher_pipes" {
       "iam:PassRole",
     ]
     resources = [
-      aws_iam_role.ami_refresher_execution.arn,
-      aws_iam_role.ami_refresher_task.arn,
+      aws_iam_role.ami_refresher_codebuild.arn,
     ]
   }
 }
@@ -76,31 +75,14 @@ resource "aws_iam_role_policy" "ami_refresher_pipes" {
 }
 
 
-# AMI-REFRESHER EXECUTION
-resource "aws_iam_role" "ami_refresher_execution" {
-  name               = "ami-refresher-execution"
-  path               = "/system/"
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-}
-
-data "aws_iam_policy" "ami_refresher_execution" {
-  name = "AmazonECSTaskExecutionRolePolicy"
-}
-
-resource "aws_iam_role_policy_attachment" "ami_refresher_execution" {
-  policy_arn = data.aws_iam_policy.ami_refresher_execution.arn
-  role       = aws_iam_role.ami_refresher_execution.name
-}
-
-
 # AMI-REFRESHER TASK
-resource "aws_iam_role" "ami_refresher_task" {
-  name               = "ami-refresher-task"
+resource "aws_iam_role" "ami_refresher_codebuild" {
+  name               = "ami-refresher-codebuild"
   path               = "/system/"
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
+  assume_role_policy = data.aws_iam_policy_document.codebuild_assume.json
 }
 
-data "aws_iam_policy_document" "ami_refresher_task" {
+data "aws_iam_policy_document" "ami_refresher_codebuild" {
   statement {
     actions = [
       "ec2:*",
@@ -127,6 +109,18 @@ data "aws_iam_policy_document" "ami_refresher_task" {
   }
   statement {
     actions = [
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      aws_cloudwatch_log_group.codebuild.arn,
+      "${aws_cloudwatch_log_group.codebuild.arn}:*",
+    ]
+  }
+  statement {
+    actions = [
       "ssm:PutParameter",
     ]
     resources = [
@@ -136,9 +130,9 @@ data "aws_iam_policy_document" "ami_refresher_task" {
   }
 }
 
-resource "aws_iam_role_policy" "ami_refresher_task" {
-  role   = aws_iam_role.ami_refresher_task.name
-  policy = data.aws_iam_policy_document.ami_refresher_task.json
+resource "aws_iam_role_policy" "ami_refresher_codebuild" {
+  role   = aws_iam_role.ami_refresher_codebuild.name
+  policy = data.aws_iam_policy_document.ami_refresher_codebuild.json
 }
 
 

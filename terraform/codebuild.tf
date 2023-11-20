@@ -1,8 +1,17 @@
-resource "aws_codebuild_project" "lmgateway" {
-  name = "lmgateway-ami"
+locals {
+  codebuild_name = "lmgateway-ami"
+}
 
-  service_role         = aws_iam_role.ami_refresher_task.arn
-  resource_access_role = aws_iam_role.ami_refresher_execution.arn
+resource "aws_cloudwatch_log_group" "codebuild" {
+  name              = "/aws/codebuild/${local.codebuild_name}"
+  retention_in_days = 7
+  kms_key_id        = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
+}
+
+resource "aws_codebuild_project" "lmgateway" {
+  name = local.codebuild_name
+
+  service_role         = aws_iam_role.ami_refresher_codebuild.arn
 
   badge_enabled          = true
   build_timeout          = 30
@@ -25,32 +34,31 @@ resource "aws_codebuild_project" "lmgateway" {
     image        = "hashicorp/packer:latest"
   }
 
-  #logs_config {
-  #  cloudwatch_logs {
-  #    group_name  = null
-  #    stream_name = null
-  #  }
-  #}
-}
-
-resource "aws_codebuild_webhook" "lmgateway" {
-  project_name = aws_codebuild_project.lmgateway.name
-  build_type   = "BUILD"
-
-  filter_group {
-    filter {
-      type    = "EVENT"
-      pattern = "PUSH"
-    }
-
-    filter {
-      type    = "BASE_REF"
-      pattern = "^refs/heads/main$"
-    }
-
-    filter {
-      type    = "FILE_PATH"
-      pattern = "^ami_refresher/.+|^buildspec.yml$"
+  logs_config {
+    cloudwatch_logs {
+      group_name = aws_cloudwatch_log_group.codebuild.name
     }
   }
 }
+
+#resource "aws_codebuild_webhook" "lmgateway" {
+#  project_name = aws_codebuild_project.lmgateway.name
+#  build_type   = "BUILD"
+#
+#  filter_group {
+#    filter {
+#      type    = "EVENT"
+#      pattern = "PUSH"
+#    }
+#
+#    filter {
+#      type    = "HEAD_REF"
+#      pattern = "^refs/heads/main$"
+#    }
+#
+#    filter {
+#      type    = "FILE_PATH"
+#      pattern = "^ami_refresher/.+|^buildspec.yml$"
+#    }
+#  }
+#}
