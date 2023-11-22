@@ -117,7 +117,7 @@ build {
   }
 
   provisioner "ansible-local" {
-    playbook_file   = "./playbook.yml"
+    playbook_file   = "./site.yml"
     playbook_dir    = "."
     extra_arguments = ["--vault-password-file=./vault-pass.sh"]
   }

@@ -1,0 +1,6 @@
+user_password: "{{ vault_user_password }}"
+authorized_keys: "{{ vault_authorized_keys }}"
+ssh_config: "{{ vault_ssh_config }}"
+wireguard_netdev: "{{ vault_wireguard_netdev }}"
+wireguard_network: "{{ vault_wireguard_network }}"
+dnsmasq_conf: "{{ vault_dnsmasq_conf }}"
