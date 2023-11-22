@@ -21,5 +21,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Ansible
+        run: python3 -m pip install --user ansible
+      - name: Install Requirements
+        run: ansible-galaxy install -r requirements.yml
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v6
