@@ -25,7 +25,7 @@ plan: validate
 apply: validate
 	@terraform -chdir=terraform apply -input=true -refresh=true
 
-@tail:
+tail:
 	@aws logs tail /aws/codebuild/lmgateway-ami --follow
 
 trigger:
