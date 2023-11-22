@@ -26,8 +26,8 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install Ansible
-        run: python3 -m pip install --user ansible
+        run: python3 -m pip install --user ansible ansible-lint
       - name: Install Requirements
         run: ansible-galaxy install -r requirements.yml
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@v6
+        run: ansible-lint
