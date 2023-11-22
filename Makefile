@@ -1,4 +1,4 @@
-.PHONY := clean build init validate plan apply
+.PHONY := clean build init validate plan apply trigger
 .DEFAULT_GOAL := build
 
 ifndef AWS_SESSION_TOKEN
@@ -24,3 +24,6 @@ plan: validate
 
 apply: validate
 	@terraform -chdir=terraform apply -input=true -refresh=true
+
+trigger:
+	@aws sqs send-message --queue-url https://sqs.eu-west-1.amazonaws.com/075673041815/ami-updates --message-body 'now go build' --delay-seconds 0 --no-cli-pager
