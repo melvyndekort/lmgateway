@@ -1,7 +1,3 @@
-data "aws_cloudwatch_event_bus" "default" {
-  name = "default"
-}
-
 resource "aws_cloudwatch_log_group" "eventbridge" {
   name              = "/aws/events/pipes/ami-updates"
   retention_in_days = 7
@@ -26,7 +22,7 @@ resource "aws_cloudwatch_event_rule" "ami_updates" {
   description = "Capture event emitted by ${aws_pipes_pipe.ami_updates.name}"
 
   event_pattern = jsonencode({
-    source = ["Pipe ${aws_pipes_pipe.ami_updates.name}"]
+    source      = ["Pipe ${aws_pipes_pipe.ami_updates.name}"]
     detail-type = ["Event from aws:sqs"]
   })
 }
@@ -49,7 +45,5 @@ resource "aws_cloudwatch_event_target" "codebuild" {
     maximum_retry_attempts       = 30
   }
 
-  input_transformer {
-    input_template = "{}"
-  }
+  input = "{}"
 }

@@ -21,6 +21,17 @@ data "aws_iam_policy_document" "pipes_assume" {
   }
 }
 
+data "aws_iam_policy_document" "events_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "codebuild_assume" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -56,7 +67,7 @@ data "aws_iam_policy_document" "ami_updates_pipes" {
       "events:PutEvents",
     ]
     resources = [
-      "*",
+      data.aws_cloudwatch_event_bus.default.arn,
     ]
   }
 }
@@ -71,7 +82,7 @@ resource "aws_iam_role_policy" "ami_updates_pipes" {
 resource "aws_iam_role" "ami_updates_eventbridge" {
   name               = "ami-updates-eventbridge"
   path               = "/system/"
-  assume_role_policy = data.aws_iam_policy_document.pipes_assume.json
+  assume_role_policy = data.aws_iam_policy_document.events_assume.json
 }
 
 data "aws_iam_policy_document" "ami_updates_eventbridge" {
