@@ -1,14 +1,17 @@
-# AMI-REFRESHER
+# LMGATEWAY
 
 ## Badges
 
 ### Workflows
 
-![pipeline](https://github.com/melvyndekort/lmgateway/actions/workflows/pipeline.yml/badge.svg)
+![CodeBuild](https://codebuild.eu-west-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiODJxdnFrSG5OMUFuUDBZZm5mRmp6ak1aZER1anVtdHIrM1RiMW5vL1pwT0tzUkt6MkxJN2p0bS9WcnpOWmdnNEJocTFOU00rU05jeFFyMXprN1BRRFVVPSIsIml2UGFyYW1ldGVyU3BlYyI6IkFDdjdaQXJvWjFuSUE1TEciLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
+[![Terraform](https://github.com/melvyndekort/lmgateway/actions/workflows/terraform.yml/badge.svg)](https://github.com/melvyndekort/lmgateway/actions/workflows/terraform.yml)
 
 ## Purpose
 
-An automation that updates an EC2 launch configuration as soon as a new AMI is published
+A simple EC2 jumphost setup which connects home via Wireguard.
+
+The AMI is built using AWS CodeBuild and Hashicorp Packer, the build gets triggered by commits to this repository and by an SNS topic subscription. The SNS topic receives updates when AWS publishes a new Amazon Linux 2023 AMI version.
 
 ## Contributing
 
