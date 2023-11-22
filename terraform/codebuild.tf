@@ -22,6 +22,10 @@ resource "aws_codebuild_project" "lmgateway" {
     location            = "https://github.com/melvyndekort/lmgateway.git"
     git_clone_depth     = 1
     report_build_status = true
+
+    git_submodules_config {
+      fetch_submodules = false
+    }
   }
 
   artifacts {
@@ -41,24 +45,24 @@ resource "aws_codebuild_project" "lmgateway" {
   }
 }
 
-#resource "aws_codebuild_webhook" "lmgateway" {
-#  project_name = aws_codebuild_project.lmgateway.name
-#  build_type   = "BUILD"
-#
-#  filter_group {
-#    filter {
-#      type    = "EVENT"
-#      pattern = "PUSH"
-#    }
-#
-#    filter {
-#      type    = "HEAD_REF"
-#      pattern = "^refs/heads/main$"
-#    }
-#
-#    filter {
-#      type    = "FILE_PATH"
-#      pattern = "^ami_refresher/.+|^buildspec.yml$"
-#    }
-#  }
-#}
+resource "aws_codebuild_webhook" "lmgateway" {
+  project_name = aws_codebuild_project.lmgateway.name
+  build_type   = "BUILD"
+
+  filter_group {
+    filter {
+      type    = "EVENT"
+      pattern = "PUSH"
+    }
+
+    filter {
+      type    = "HEAD_REF"
+      pattern = "^refs/heads/main$"
+    }
+
+    filter {
+      type    = "FILE_PATH"
+      pattern = "^ami_builder/.+|^buildspec.yml$"
+    }
+  }
+}
