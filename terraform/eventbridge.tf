@@ -2,6 +2,12 @@ data "aws_cloudwatch_event_bus" "default" {
   name = "default"
 }
 
+resource "aws_cloudwatch_log_group" "eventbridge" {
+  name              = "/aws/events/pipes/ami-updates"
+  retention_in_days = 7
+  kms_key_id        = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
+}
+
 resource "aws_pipes_pipe" "ami_updates" {
   name     = "ami-updates"
   role_arn = aws_iam_role.ami_updates_pipes.arn
@@ -13,32 +19,37 @@ resource "aws_pipes_pipe" "ami_updates" {
       batch_size = 1
     }
   }
-
-  target_parameters {
-    input_template = jsonencode({
-      id = "$.id"
-      account = "$.account"
-      source = "mdekort.ami-updates"
-      time = "$.time"
-      region = "$.region"
-      resources = []
-      detail-type = {}
-      projectName = aws_codebuild_project.lmgateway.name
-    })
-  }
 }
 
 resource "aws_cloudwatch_event_rule" "ami_updates" {
-  name        = "capture-ami-updates"
-  description = "Capture custom ami-updates events"
+  name        = "pipe-ami-updates"
+  description = "Capture event emitted by ${aws_pipes_pipe.ami_updates.name}"
 
   event_pattern = jsonencode({
-    source = ["mdekort.ami-updates"]
+    source = ["Pipe ${aws_pipes_pipe.ami_updates.name}"]
+    detail-type = ["Event from aws:sqs"]
   })
 }
 
+resource "aws_sqs_queue" "ami_updates_dlq" {
+  name = "ami-updates-dlq"
+}
+
 resource "aws_cloudwatch_event_target" "codebuild" {
-  rule      = aws_cloudwatch_event_rule.ami_updates.name
-  arn       = aws_codebuild_project.lmgateway.arn
-  role_arn  = aws_iam_role.ami_updates_eventbridge.arn
+  rule     = aws_cloudwatch_event_rule.ami_updates.name
+  arn      = aws_codebuild_project.lmgateway.arn
+  role_arn = aws_iam_role.ami_updates_eventbridge.arn
+
+  dead_letter_config {
+    arn = aws_sqs_queue.ami_updates_dlq.arn
+  }
+
+  retry_policy {
+    maximum_event_age_in_seconds = 3600
+    maximum_retry_attempts       = 30
+  }
+
+  input_transformer {
+    input_template = "{}"
+  }
 }

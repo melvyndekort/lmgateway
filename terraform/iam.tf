@@ -77,10 +77,18 @@ resource "aws_iam_role" "ami_updates_eventbridge" {
 data "aws_iam_policy_document" "ami_updates_eventbridge" {
   statement {
     actions = [
-      "codebuild:*",
+      "codebuild:StartBuild",
     ]
     resources = [
       aws_codebuild_project.lmgateway.arn,
+    ]
+  }
+  statement {
+    actions = [
+      "sqs:SendMessage"
+    ]
+    resources = [
+      aws_sqs_queue.ami_updates_dlq.arn
     ]
   }
 }
