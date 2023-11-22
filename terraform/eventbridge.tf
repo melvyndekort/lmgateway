@@ -1,9 +1,3 @@
-resource "aws_cloudwatch_log_group" "eventbridge" {
-  name              = "/aws/events/pipes/ami-updates"
-  retention_in_days = 7
-  kms_key_id        = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
-}
-
 resource "aws_pipes_pipe" "ami_updates" {
   name     = "ami-updates"
   role_arn = aws_iam_role.ami_updates_pipes.arn
