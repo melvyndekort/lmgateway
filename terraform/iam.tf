@@ -110,7 +110,7 @@ resource "aws_iam_role_policy" "ami_updates_eventbridge" {
 }
 
 
-# AMI-REFRESHER TASK
+# CODEBUILD TASK
 resource "aws_iam_role" "codebuild" {
   name               = "lmgateway-codebuild"
   path               = "/system/"
@@ -124,6 +124,14 @@ data "aws_iam_policy_document" "codebuild" {
     ]
     resources = [
       "*",
+    ]
+  }
+  statement {
+    actions = [
+      "autoscaling:StartInstanceRefresh"
+    ]
+    resources = [
+      aws_autoscaling_group.lmgateway.arn,
     ]
   }
   statement {
