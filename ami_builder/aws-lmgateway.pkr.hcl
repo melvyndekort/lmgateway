@@ -36,8 +36,9 @@ source "amazon-ebs" "lmgateway_x86_64" {
   }
 
   launch_block_device_mappings {
-    device_name = "/dev/xvda"
-    encrypted   = true
+    device_name           = "/dev/xvda"
+    delete_on_termination = true
+    encrypted             = true
   }
 
   tags = {
@@ -82,8 +83,9 @@ source "amazon-ebs" "lmgateway_arm64" {
   }
 
   launch_block_device_mappings {
-    device_name = "/dev/xvda"
-    encrypted   = true
+    device_name           = "/dev/xvda"
+    delete_on_termination = true
+    encrypted             = true
   }
 
   tags = {
