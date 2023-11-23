@@ -4,9 +4,9 @@
 
 ### Workflows
 
-![CodeBuild](https://codebuild.eu-west-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiODJxdnFrSG5OMUFuUDBZZm5mRmp6ak1aZER1anVtdHIrM1RiMW5vL1pwT0tzUkt6MkxJN2p0bS9WcnpOWmdnNEJocTFOU00rU05jeFFyMXprN1BRRFVVPSIsIml2UGFyYW1ldGVyU3BlYyI6IkFDdjdaQXJvWjFuSUE1TEciLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
+![AWS CodeBuild](https://codebuild.eu-west-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiODJxdnFrSG5OMUFuUDBZZm5mRmp6ak1aZER1anVtdHIrM1RiMW5vL1pwT0tzUkt6MkxJN2p0bS9WcnpOWmdnNEJocTFOU00rU05jeFFyMXprN1BRRFVVPSIsIml2UGFyYW1ldGVyU3BlYyI6IkFDdjdaQXJvWjFuSUE1TEciLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
 [![Terraform](https://github.com/melvyndekort/lmgateway/actions/workflows/terraform.yml/badge.svg)](https://github.com/melvyndekort/lmgateway/actions/workflows/terraform.yml)
-[![Ansible-lint](https://github.com/melvyndekort/lmgateway/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/melvyndekort/lmgateway/actions/workflows/ansible-lint.yml)
+[![Ansible Lint](https://github.com/melvyndekort/lmgateway/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/melvyndekort/lmgateway/actions/workflows/ansible-lint.yml)
 
 ## Purpose
 
