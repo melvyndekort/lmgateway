@@ -37,12 +37,5 @@ phases:
         --filters 'Name=name,Values=mdekort-lmgateway-arm64'
         --query 'Images[*].ImageId'
         --output text)
-      - echo 'Terminating running instances'
-      - >
-        aws ec2 terminate-instances
-        --output text
-        --instance-ids
-        $(aws ec2 describe-instances
-        --filters 'Name=tag:Name,Values=lmgateway'
-        --query 'Reservations[*].Instances[*].InstanceId[]'
-        --output text)
+      - echo 'Refresh instances in ASG'
+      - aws autoscaling start-instance-refresh --auto-scaling-group-name lmgateway
