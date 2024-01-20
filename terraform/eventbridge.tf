@@ -21,10 +21,6 @@ resource "aws_cloudwatch_event_rule" "ami_updates" {
   })
 }
 
-resource "aws_sqs_queue" "ami_updates_dlq" {
-  name = "ami-updates-dlq"
-}
-
 resource "aws_cloudwatch_event_target" "codebuild" {
   rule     = aws_cloudwatch_event_rule.ami_updates.name
   arn      = aws_codebuild_project.lmgateway.arn
