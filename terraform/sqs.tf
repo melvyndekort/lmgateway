@@ -53,3 +53,23 @@ resource "aws_sqs_queue_redrive_allow_policy" "ami_updates_dlq" {
     sourceQueueArns   = [aws_sqs_queue.ami_updates.arn]
   })
 }
+
+locals {
+  alarm_topic_arn = data.terraform_remote_state.cloudsetup.outputs.alerting_sns_arn
+}
+
+resource "aws_cloudwatch_metric_alarm" "ami_updates_dlq_alarm" {
+  alarm_name          = "ami_updates_dlq_alarm"
+  statistic           = "Sum"
+  metric_name         = "ApproximateNumberOfMessagesVisible"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  threshold           = 1
+  period              = 600
+  evaluation_periods  = 2
+  namespace           = "AWS/SQS"
+  dimensions = {
+    QueueName = aws_sqs_queue.ami_updates_dlq.name
+  }
+  alarm_actions = [local.alarm_topic_arn]
+  ok_actions    = [local.alarm_topic_arn]
+}
