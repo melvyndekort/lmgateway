@@ -34,6 +34,8 @@ resource "aws_cloudwatch_event_target" "codebuild" {
     maximum_event_age_in_seconds = 3600
     maximum_retry_attempts       = 30
   }
+
+  input = "{}"
 }
 
 resource "aws_cloudwatch_event_rule" "codebuild_status" {
