@@ -43,7 +43,7 @@ resource "aws_cloudwatch_event_rule" "codebuild_status" {
   event_pattern = jsonencode({
     source      = ["aws.codebuild"]
     detail-type = ["CodeBuild Build State Change"]
-    detail      = {
+    detail = {
       build-status = [
         "IN_PROGRESS",
         "SUCCEEDED",
