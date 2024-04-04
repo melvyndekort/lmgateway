@@ -34,6 +34,31 @@ resource "aws_cloudwatch_event_target" "codebuild" {
     maximum_event_age_in_seconds = 3600
     maximum_retry_attempts       = 30
   }
+}
 
-  input = "{}"
+resource "aws_cloudwatch_event_rule" "codebuild_status" {
+  name        = "codebuild-status"
+  description = "Capture event emitted by ${aws_codebuild_project.lmgateway.name}"
+
+  event_pattern = jsonencode({
+    source      = ["aws.codebuild"]
+    detail-type = ["CodeBuild Build State Change"]
+    detail      = {
+      build-status = [
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED"
+      ]
+
+      project-name = [
+        aws_codebuild_project.lmgateway.name
+      ]
+    }
+  })
+}
+
+resource "aws_cloudwatch_event_target" "codebuild_status" {
+  rule = aws_cloudwatch_event_rule.codebuild_status.name
+  arn  = data.terraform_remote_state.cloudsetup.outputs.notifications_sns_arn
 }
