@@ -5,6 +5,7 @@ resource "aws_autoscaling_group" "lmgateway" {
   max_size            = 2
   min_size            = 0
   capacity_rebalance  = true
+  enabled_metrics     = true
 
   instance_refresh {
     strategy = "Rolling"
