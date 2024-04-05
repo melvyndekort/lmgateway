@@ -37,20 +37,3 @@ resource "aws_cloudwatch_event_target" "codebuild" {
 
   input = "{}"
 }
-
-resource "aws_codestarnotifications_notification_rule" "build_status" {
-  name        = "lmgateway-ami-update-notifications"
-  resource    = aws_codebuild_project.lmgateway.arn
-  detail_type = "BASIC"
-
-  event_type_ids = [
-    "codebuild-project-build-state-failed",
-    "codebuild-project-build-state-succeeded",
-    "codebuild-project-build-state-in-progress",
-    "codebuild-project-build-state-stopped"
-  ]
-
-  target {
-    address = data.terraform_remote_state.cloudsetup.outputs.notifications_sns_arn
-  }
-}
