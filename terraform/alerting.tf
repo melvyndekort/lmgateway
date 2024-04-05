@@ -1,5 +1,5 @@
 locals {
-  alarm_topic_arn = data.terraform_remote_state.cloudsetup.outputs.alerting_sns_arn
+  alarm_topic_arn         = data.terraform_remote_state.cloudsetup.outputs.alerting_sns_arn
   notifications_topic_arn = data.terraform_remote_state.cloudsetup.outputs.notifications_sns_arn
 }
 
