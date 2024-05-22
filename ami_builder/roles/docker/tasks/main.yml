@@ -1,7 +1,5 @@
 ---
 - name: Configure docker
-  notify:
-    - 'Enable docker'
   block:
     - name: Install docker
       ansible.builtin.dnf:
@@ -13,3 +11,9 @@
         name: melvyn
         groups: docker
         append: true
+
+    - name: Enable docker
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
