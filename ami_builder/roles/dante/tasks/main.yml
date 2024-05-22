@@ -3,6 +3,7 @@
   community.docker.docker_container:
     name: dante
     image: wernight/dante:latest
+    detach: true
     state: started
     network_mode: host
     restart_policy: always
