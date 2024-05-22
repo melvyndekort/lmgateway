@@ -114,12 +114,12 @@ build {
   provisioner "shell" {
     inline = [
       "sudo dnf install -y ansible aws-cli python3 python3-pip",
-      "pip install --user boto3",
-      "ansible-galaxy install -r requirements.yml"
+      "pip install --user boto3"
     ]
   }
 
   provisioner "ansible-local" {
+    galaxy_file     = "./requirements.yml"
     playbook_file   = "./site.yml"
     playbook_dir    = "."
     extra_arguments = ["--vault-password-file=./vault-pass.sh"]
