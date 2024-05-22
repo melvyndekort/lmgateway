@@ -1,0 +1,52 @@
+---
+- name: Configure dante
+  notify:
+    - 'Enable dante'
+  block:
+    - name: Install the 'Development tools' package group
+      ansible.builtin.dnf:
+        name: '@Development tools'
+        state: present
+
+    - name: Download and extract Dante
+      ansible.builtin.unarchive:
+        src: https://www.inet.no/dante/files/dante-{{ dante_version }}.tar.gz
+        dest: /usr/src/
+        remote_src: true
+        creates: /usr/src/dante-{{ dante_version }}
+
+    - name: Configure the Dante package
+      ansible.builtin.command:
+        cmd: ./configure
+        chdir: /usr/src/dante-{{ dante_version }}
+        creates: /usr/src/dante-{{ dante_version }}/config.status
+
+    - name: Build the Dante package
+      ansible.builtin.command:
+        cmd: make
+        chdir: /usr/src/dante-{{ dante_version }}
+        creates: /usr/src/dante-{{ dante_version }}/sockd/sockd
+
+    - name: Install the Dante package
+      ansible.builtin.command:
+        cmd: make install
+        chdir: /usr/src/dante-{{ dante_version }}
+        creates: /usr/local/sbin/sockd
+
+    - name: Install Dante configuration file
+      ansible.builtin.template:
+        src: sockd.conf
+        dest: /etc/sockd.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Install Dante systemd config
+      notify:
+        - 'Reload systemd'
+      ansible.builtin.copy:
+        src: /usr/src/dante-{{ dante_version }}/SPECS/dante.service
+        dest: /lib/systemd/system/
+        owner: root
+        group: root
+        mode: '0644'
