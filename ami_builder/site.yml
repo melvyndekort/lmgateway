@@ -11,7 +11,7 @@
     - users
     - ssm
     - fluent_bit
-    - wireguard
     - role: dante
       vars:
         dante_version: 1.4.3
+    - wireguard
