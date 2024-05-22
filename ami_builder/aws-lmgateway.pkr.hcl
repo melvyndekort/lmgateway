@@ -114,7 +114,8 @@ build {
   provisioner "shell" {
     inline = [
       "sudo dnf install -y ansible aws-cli python3 python3-pip",
-      "pip install --user boto3"
+      "pip install --user boto3",
+      "ansible-galaxy install -r requirements.yml"
     ]
   }
 
