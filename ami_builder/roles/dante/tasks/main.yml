@@ -1,6 +1,6 @@
 ---
 - name: Run dante
-  community.docker.docker_containers:
+  community.docker.docker_container:
     name: dante
     image: wernight/dante:latest
     state: started
