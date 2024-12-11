@@ -39,6 +39,7 @@ source "amazon-ebs" "lmgateway_x86_64" {
     device_name           = "/dev/xvda"
     delete_on_termination = true
     encrypted             = true
+    volume_size           = 16
   }
 
   tags = {
