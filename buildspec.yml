@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - apk add --update --no-cache aws-cli
+      - apk add --update --no-cache aws-cli ansible
       - aws configure set default.region eu-west-1
   pre_build:
     commands:

@@ -113,14 +113,7 @@ build {
     "source.amazon-ebs.lmgateway_arm64"
   ]
 
-  provisioner "shell" {
-    inline = [
-      "sudo dnf install -y ansible aws-cli python3 python3-pip",
-      "pip install --user boto3"
-    ]
-  }
-
-  provisioner "ansible-local" {
+  provisioner "ansible" {
     galaxy_file     = "./requirements.yml"
     playbook_file   = "./site.yml"
     playbook_dir    = "."
