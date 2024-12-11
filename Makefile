@@ -35,3 +35,6 @@ trigger:
 trigger-direct:
 	@aws codebuild start-build --project-name lmgateway-ami --no-cli-pager
 	@aws logs tail /aws/codebuild/lmgateway-ami --follow
+
+vault:
+	@ansible-vault edit --vault-password-file=ami_builder/vault-pass.sh ami_builder/group_vars/all/vault.yml
