@@ -1,8 +1,4 @@
 ---
-- name: Set timezone to Europe/Amsterdam
-  community.general.timezone:
-    name: Europe/Amsterdam
-
 - name: Set NTP server
   notify:
     - 'Enable timesyncd'
