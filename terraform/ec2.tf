@@ -93,13 +93,5 @@ resource "aws_launch_template" "arm" {
     }
   }
 
-  #tag_specifications {
-  #  resource_type = "spot-instances-request"
-  #
-  #  tags = {
-  #    Name = "lmgateway"
-  #  }
-  #}
-
   depends_on = [aws_ssm_parameter.ami_arm64]
 }

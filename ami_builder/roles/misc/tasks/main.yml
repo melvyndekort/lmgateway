@@ -1,8 +1,4 @@
 ---
-- name: Gather facts from AWS metadata endpoint
-  amazon.aws.ec2_metadata_facts:
-    metadata_token_ttl_seconds: 240
-
 - name: Set timezone to Europe/Amsterdam
   community.general.timezone:
     name: Europe/Amsterdam
