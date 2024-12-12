@@ -17,6 +17,13 @@ source "amazon-ebs" "lmgateway_x86_64" {
   spot_instance_types = ["t3a.small", "t3.small", "t2.small", "t2.medium"]
   spot_price          = "auto"
 
+  imds_support = "v2.0"
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens = "optional"
+  }
+
   source_ami_filter {
     filters = {
       architecture        = "x86_64"
@@ -64,6 +71,13 @@ source "amazon-ebs" "lmgateway_arm64" {
   ami_name            = "mdekort-lmgateway-arm64"
   spot_instance_types = ["t4g.small", "t4g.medium"]
   spot_price          = "auto"
+
+  imds_support = "v2.0"
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens = "optional"
+  }
 
   source_ami_filter {
     filters = {
