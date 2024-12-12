@@ -1,5 +1,6 @@
 ---
-- name: 'LMGateway'
+- name: 'Provision AMI'
+  hosts: default
   become: true
 
   vars:
