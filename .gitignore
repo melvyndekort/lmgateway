@@ -2,3 +2,5 @@
 .terraform.lock.hcl
 .vscode/
 .packer.d/
+terraform/secrets.yaml
+secrets.yaml

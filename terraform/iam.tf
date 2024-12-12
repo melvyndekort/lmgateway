@@ -164,6 +164,14 @@ data "aws_iam_policy_document" "codebuild" {
   }
   statement {
     actions = [
+      "ssm:GetParameters",
+    ]
+    resources = [
+      aws_ssm_parameter.github_api_token.arn
+    ]
+  }
+  statement {
+    actions = [
       "ssm:PutParameter",
     ]
     resources = [

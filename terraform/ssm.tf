@@ -15,6 +15,12 @@ resource "aws_ssm_parameter" "newrelic_key" {
   value = data.terraform_remote_state.cloudsetup.outputs.newrelic_lmgateway_ingest_key
 }
 
+resource "aws_ssm_parameter" "github_api_token" {
+  name  = "/mdekort/codebuild/github_api_token"
+  type  = "SecureString"
+  value = local.secrets.codebuild.github_api_token
+}
+
 resource "aws_ssm_parameter" "ami_x86_64" {
   name           = "/mdekort/lmgateway/ami/x86_64"
   type           = "String"
