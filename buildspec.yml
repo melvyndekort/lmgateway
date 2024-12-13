@@ -18,6 +18,7 @@ phases:
     commands:
       - packer build -color=false aws-lmgateway.pkr.hcl
   post_build:
+    on-failure: ABORT
     commands:
       - echo 'Updating x86_64 Image ID in SSM Parameter Store'
       - >
