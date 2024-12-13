@@ -117,5 +117,7 @@ build {
     galaxy_file     = "./requirements.yml"
     playbook_file   = "./site.yml"
     extra_arguments = ["--vault-password-file=./vault-pass.sh", "-vvvv"]
+    host            = "{{ .Host }}"
+    user            = "ec2-user"
   }
 }
