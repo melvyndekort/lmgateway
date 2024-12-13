@@ -116,6 +116,6 @@ build {
   provisioner "ansible" {
     galaxy_file     = "./requirements.yml"
     playbook_file   = "./site.yml"
-    extra_arguments = ["--vault-password-file=./vault-pass.sh"]
+    extra_arguments = ["--vault-password-file=./vault-pass.sh", "-vvvv"]
   }
 }
