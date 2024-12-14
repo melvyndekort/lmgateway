@@ -36,13 +36,11 @@
 
     - name: Configure resolver
       ansible.builtin.copy:
+        src: resolv.conf.dnsmasq
         dest: /etc/resolv.conf.dnsmasq
         owner: root
         group: root
         mode: '0644'
-        content: |
-          search mdekort.lan
-          nameserver 127.0.0.1
 
     - name: Enable resolver
       ansible.builtin.file:

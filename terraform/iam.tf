@@ -202,24 +202,6 @@ resource "aws_iam_instance_profile" "installer" {
   role = aws_iam_role.installer.name
 }
 
-data "aws_iam_policy_document" "installer" {
-  statement {
-    actions = [
-      "ssm:GetParameter",
-      "ssm:GetParameters",
-    ]
-
-    resources = [
-      aws_ssm_parameter.newrelic_key.arn,
-    ]
-  }
-}
-
-resource "aws_iam_role_policy" "installer" {
-  role   = aws_iam_role.installer.name
-  policy = data.aws_iam_policy_document.installer.json
-}
-
 
 # LMGATEWAY
 resource "aws_iam_role" "lmgateway" {
@@ -252,7 +234,8 @@ data "aws_iam_policy_document" "lmgateway" {
 
     resources = [
       aws_ssm_parameter.ami_x86_64.arn,
-      aws_ssm_parameter.ami_arm64.arn
+      aws_ssm_parameter.ami_arm64.arn,
+      aws_ssm_parameter.newrelic_key.arn,
     ]
   }
 }

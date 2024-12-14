@@ -7,7 +7,7 @@ env:
 phases:
   install:
     commands:
-      - apk add --update --no-cache aws-cli ansible openssh py3-boto3
+      - apk add --update --no-cache aws-cli ansible openssh
       - aws configure set default.region eu-west-1
   pre_build:
     commands:

@@ -5,17 +5,11 @@
   block:
     - name: Configure dnf repository
       ansible.builtin.copy:
+        src: fluent-bit.repo
         dest: /etc/yum.repos.d/fluent-bit.repo
         owner: root
         group: root
         mode: '0644'
-        content: |
-          [fluent-bit]
-          name = Fluent Bit
-          baseurl = https://packages.fluentbit.io/amazonlinux/2022/$basearch/
-          gpgcheck=1
-          gpgkey=https://packages.fluentbit.io/fluentbit.key
-          enabled=1
 
     - name: Install through dnf
       ansible.builtin.dnf:
@@ -59,56 +53,16 @@
 
     - name: Plugin configuration
       ansible.builtin.copy:
+        src: plugins.conf
         dest: /etc/fluent-bit/plugins.conf
         owner: root
         group: root
         mode: '0644'
-        content: |
-          [PLUGINS]
-            Path /etc/fluent-bit/lib/out_newrelic.so
-
-    - name: Retrieve secret from SSM Parameter Store
-      ansible.builtin.set_fact:
-        newrelic_key: "{{ lookup('amazon.aws.aws_ssm', '/mdekort/lmgateway/newrelic_key', region=ansible_ec2_instance_identity_document_region) }}"
-        cacheable: false
 
     - name: Configuration file
       ansible.builtin.copy:
+        src: fluent-bit.conf
         dest: /etc/fluent-bit/fluent-bit.conf
         owner: root
         group: root
         mode: '0644'
-        content: |
-          [SERVICE]
-              flush            1
-              daemon           Off
-              log_level        info
-              parsers_file     parsers.conf
-              plugins_file     plugins.conf
-              http_server      On
-              http_listen      0.0.0.0
-              http_port        2020
-              storage.metrics  on
-
-          [INPUT]
-              Name                systemd
-              Path                /var/log/journal
-              DB                  /run/fluent-bit/journal.db
-              Tag                 journal.*
-              Systemd_Filter      _SYSTEMD_UNIT=amazon-ssm-agent.service
-              Systemd_Filter      _SYSTEMD_UNIT=fluent-bit.service
-              Systemd_Filter      _SYSTEMD_UNIT=sshd.service
-              Systemd_Filter      _SYSTEMD_UNIT=systemd-logind.service
-              Systemd_Filter      _SYSTEMD_UNIT=wg-quick@wg0.service
-              Systemd_Filter_Type Or
-
-          [FILTER]
-              Name   modify
-              Match  journal.*
-              Copy   _HOSTNAME hostname
-
-          [OUTPUT]
-              Name        newrelic
-              Match       *
-              endpoint    https://log-api.eu.newrelic.com/log/v1
-              licenseKey  {{ newrelic_key }}

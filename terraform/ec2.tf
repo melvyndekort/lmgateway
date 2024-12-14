@@ -49,6 +49,8 @@ resource "aws_launch_template" "x86" {
     }
   }
 
+  user_data = filebase64("${path.module}/userdata.sh")
+
   depends_on = [aws_ssm_parameter.ami_x86_64]
 }
 
@@ -92,6 +94,8 @@ resource "aws_launch_template" "arm" {
       Name = "lmgateway"
     }
   }
+
+  user_data = filebase64("${path.module}/userdata.sh")
 
   depends_on = [aws_ssm_parameter.ami_arm64]
 }

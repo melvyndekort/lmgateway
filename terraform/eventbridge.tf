@@ -9,6 +9,10 @@ resource "aws_pipes_pipe" "ami_updates" {
       batch_size = 1
     }
   }
+
+  log_configuration {
+    level = "OFF"
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "ami_updates" {
