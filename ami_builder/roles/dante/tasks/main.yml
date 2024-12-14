@@ -1,6 +1,7 @@
 ---
 - name: Run dante
   community.docker.docker_container:
+    api_version: "1.44"
     name: dante
     image: wernight/dante:latest
     detach: true
