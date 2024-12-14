@@ -13,4 +13,4 @@
     - fluent_bit
     - docker
     - wireguard
-    # - dante
+    - dante

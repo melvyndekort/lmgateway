@@ -3,5 +3,5 @@
   ansible.builtin.service:
     name: fluent-bit
     state: stopped
-    # currently disabled, since New Relic doesn't support IPv6
+    # TODO: currently disabled, since New Relic doesn't support IPv6
     enabled: false
