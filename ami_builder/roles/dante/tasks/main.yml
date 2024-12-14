@@ -1,5 +1,6 @@
 ---
 - name: Run dante
+  when: ansible_architecture == "x86_64"
   community.docker.docker_container:
     api_version: "1.44"
     name: dante
