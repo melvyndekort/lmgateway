@@ -6,11 +6,6 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
-  tasks:
-    - name: Gather facts from AWS metadata endpoint
-      amazon.aws.ec2_metadata_facts:
-        metadata_token_ttl_seconds: 600
-
   roles:
     - misc
     - users
