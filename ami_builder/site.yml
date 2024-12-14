@@ -12,5 +12,5 @@
     - ssm
     - fluent_bit
     - docker
-    - wireguard
     - dante
+    - wireguard
