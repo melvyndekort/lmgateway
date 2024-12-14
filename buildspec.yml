@@ -7,7 +7,7 @@ env:
 phases:
   install:
     commands:
-      - apk add --update --no-cache aws-cli ansible openssh
+      - apk add --update --no-cache aws-cli ansible openssh py3-boto3
       - aws configure set default.region eu-west-1
   pre_build:
     commands:
@@ -15,10 +15,10 @@ phases:
       - packer init .
       - packer validate .
   build:
+    on-failure: ABORT
     commands:
       - packer build -color=false aws-lmgateway.pkr.hcl
   post_build:
-    on-failure: ABORT
     commands:
       - echo 'Updating x86_64 Image ID in SSM Parameter Store'
       - >
