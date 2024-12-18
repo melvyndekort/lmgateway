@@ -1,11 +1,3 @@
 ---
 - name: Reload network
-  ansible.builtin.command: networkctl reload
-  register: my_output
-  changed_when: my_output.rc != 0
-
-- name: Enable dnsmasq
-  ansible.builtin.service:
-    name: dnsmasq
-    state: stopped
-    enabled: true
+  ansible.builtin.command: networkctl Reload

@@ -18,34 +18,3 @@
         group: systemd-network
         mode: '0640'
         content: '{{ wireguard_network }}'
-
-- name: Configure dnsmasq
-  notify:
-    - 'Enable dnsmasq'
-  block:
-    - name: Install through dnf
-      ansible.builtin.dnf:
-        name: 'dnsmasq'
-        state: present
-
-    - name: Configure dnsmasq
-      ansible.builtin.copy:
-        dest: /etc/dnsmasq.d/wireguard.conf
-        mode: '0664'
-        content: '{{ dnsmasq_conf }}'
-
-    - name: Configure resolver
-      ansible.builtin.copy:
-        src: resolv.conf.dnsmasq
-        dest: /etc/resolv.conf.dnsmasq
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Enable resolver
-      ansible.builtin.file:
-        src: /etc/resolv.conf.dnsmasq
-        dest: /etc/resolv.conf
-        owner: root
-        group: root
-        state: link

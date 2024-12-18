@@ -13,4 +13,5 @@
     - fluent_bit
     - docker
     - dante
+    - dnsmasq
     - wireguard
