@@ -10,7 +10,6 @@
     - misc
     - users
     - ssm
-    - fluent_bit
     - docker
     - dante
     - dnsmasq

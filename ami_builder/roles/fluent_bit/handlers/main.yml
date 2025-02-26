@@ -1,6 +1,0 @@
----
-- name: Enable fluent-bit
-  ansible.builtin.service:
-    name: fluent-bit
-    state: stopped
-    enabled: true
