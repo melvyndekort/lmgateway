@@ -9,11 +9,7 @@ resource "aws_ssm_parameter" "ansible_vault_pass" {
   value = random_password.ansible_vault_pass.result
 }
 
-resource "aws_ssm_parameter" "newrelic_key" {
-  name  = "/mdekort/lmgateway/newrelic_key"
-  type  = "SecureString"
-  value = data.terraform_remote_state.cloudsetup.outputs.newrelic_lmgateway_ingest_key
-}
+
 
 resource "aws_ssm_parameter" "github_api_token" {
   name  = "/mdekort/codebuild/github_api_token"

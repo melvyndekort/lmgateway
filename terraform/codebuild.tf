@@ -5,7 +5,7 @@ locals {
 resource "aws_cloudwatch_log_group" "codebuild" {
   name              = "/aws/codebuild/${local.codebuild_name}"
   retention_in_days = 7
-  kms_key_id        = data.terraform_remote_state.cloudsetup.outputs.generic_kms_key_arn
+  kms_key_id        = data.terraform_remote_state.tf_aws.outputs.generic_kms_key_arn
 }
 
 resource "aws_codebuild_project" "lmgateway" {

@@ -1,7 +1,7 @@
 resource "aws_security_group" "lmgateway" {
   name        = "lmgateway"
   description = "SSH jump hosts"
-  vpc_id      = data.terraform_remote_state.cloudsetup.outputs.vpc_id
+  vpc_id      = data.terraform_remote_state.tf_aws.outputs.vpc_id
 
   tags = {
     Name = "lmgateway"
@@ -25,7 +25,7 @@ resource "aws_security_group_rule" "eice_lmgateway_egress" {
   to_port                  = 22
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.lmgateway.id
-  security_group_id        = data.terraform_remote_state.cloudsetup.outputs.eice_security_group_id
+  security_group_id        = data.terraform_remote_state.tf_aws.outputs.eice_security_group_id
   description              = "SSH traffic to lmgateway"
 }
 
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "eice_lmgateway_ssh" {
   from_port                = 22
   to_port                  = 22
   protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.cloudsetup.outputs.eice_security_group_id
+  source_security_group_id = data.terraform_remote_state.tf_aws.outputs.eice_security_group_id
   security_group_id        = aws_security_group.lmgateway.id
   description              = "SSH traffic from EICE"
 }

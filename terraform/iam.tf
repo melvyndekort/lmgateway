@@ -235,7 +235,7 @@ data "aws_iam_policy_document" "lmgateway" {
     resources = [
       aws_ssm_parameter.ami_x86_64.arn,
       aws_ssm_parameter.ami_arm64.arn,
-      aws_ssm_parameter.newrelic_key.arn,
+
     ]
   }
 }
